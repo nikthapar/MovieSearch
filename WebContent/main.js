@@ -54,7 +54,7 @@ $submit.on('click', function(){
 	if(checkedResults.length ==0){
 		alert('no movie selected');
 	}else{
-		window.location.href="/Movie/add?ids="+checkedResults.join(',')
+		window.location.href="/Movies/add?ids="+checkedResults.join(',')
 	}
 	
 })
