@@ -1,9 +1,11 @@
+
 let $output = $("#output");
 let data = null;
 let $submit = $('#submit');
 let $mydiv = $('#mydiv');
-//let type = 0;
+let $row1 = $('#row1');
 function myFunction(){
+	$output.empty();
 	let APIKEY = "1f39dea1e4239caa8c1ae2c4975e9926";
 	let baseURL="https://api.themoviedb.org/3/";
 	let url="".concat(baseURL,'configuration?api_key=',APIKEY);
@@ -31,6 +33,8 @@ let runSearch=function(keyword){
 }
 
 function inner(){
+	$mydiv.empty();
+	$row1.empty();
 	let movieList = data ? data.results : [];
 	for(let i = 0; i < movieList.length; i++){
 		let item = movieList[i];
@@ -41,11 +45,8 @@ function inner(){
 function getMovieItemHTML(item,i){
 	let html = "";
 	html = "<div class='movie-item'>" +
-	        '<p><img src="http://image.tmdb.org/t/p/w500' + data.results[i].poster_path + '" width=200 height=300>'+"<br>"+
-	        "Title :-"+data.results[i].title+"<br>"+
-	        "Rating :-"+data.results[i].vote_average+"<br>"+
-			"</p>"+"<input type='checkbox' name='movie'/>"+
-			"<hr>"
+	        '<div class="items"><img src="http://image.tmdb.org/t/p/w500' + data.results[i].poster_path + '" width=200 height=300>'+"</div>"+
+			"<div style='padding-left:10px'><input type='checkbox' name='movie'/></div>"+
 			"</div>"
 	return html;
 };
@@ -60,6 +61,7 @@ $submit.on('click', function(){
 		}
 	}
 	count(checkedResults);
+	
 })
 
 
@@ -73,44 +75,46 @@ function action1(){
 			var arr = JSON.parse(this.responseText);
 			if(arr.Movies.length==0){
 				alert("No Movie In Cart");
-				window.location.href="/MovieCart/"
+				window.location.href="/MovieCart1/"
 			}
 			else{
+				$mydiv.empty();
+				$row1.empty();
 			    Detail(arr.Movies);
-			    $mydiv.append("<br><h5>Total Movies In Cart "+arr.Movies.length+"</h5>");
+			    $row1.append("<br><span ><h5 id='count'>Total Movies In Cart "+arr.Movies.length+"</h5></span>");
 			}
 		}
 	};
 	
 	var params = "type=0";
-	xmlhttp.open('GET',"http://localhost:8084/MovieCart/view?"+params, true);
+	xmlhttp.open('GET',"http://localhost:8084/MovieCart1/view?"+params, true);
 	xmlhttp.send();
 }
 
 
-function remove(){
-	let index = document.getElementById("remove").value;
-var xmlhttp = new XMLHttpRequest();
-	
-	xmlhttp.onreadystatechange = function(){
-		if(this.readyState == 4 && this.status == 200){
-			var arr = JSON.parse(this.responseText);
-			if(arr.flag == "1"){
-				alert("Deleate Succesfully");
-				window.location.href="/MovieCart/"
+function remove(index){
+	var xmlhttp = new XMLHttpRequest();
+		
+		xmlhttp.onreadystatechange = function(){
+			if(this.readyState == 4 && this.status == 200){
+				var arr = JSON.parse(this.responseText);
+				if(arr.flag == "1"){
+					alert("Deleate Succesfully");
+					$("#movie-"+index).remove();
+					var a =$('#count');
+					a.text("Total Movie in Cart "+arr.count);
+				}
+				else{
+					alert("Failed");
+				}
 				
-			}
-			else{
-				alert("Failed");
-			}
-			
 
-		}
-	};
-	
-	var params = "type=1&"+"index="+index;
-	xmlhttp.open('GET',"http://localhost:8084/MovieCart/view?"+params, true);
-	xmlhttp.send();
+			}
+		};
+		
+		var params = "type=1&"+"index="+index;
+		xmlhttp.open('GET',"http://localhost:8084/MovieCart1/view?"+params, true);
+		xmlhttp.send();
 }
 
 var count = function(checkedResults){
@@ -126,24 +130,24 @@ var xmlhttp = new XMLHttpRequest();
 				type = arr.count+checkedResults.length;
 			}
 			console.log(type);
-			document.getElementById("count").innerHTML="<p>Total Movie " +
-			"ADDED is "+arr.count;
+			//document.getElementById("count").innerHTML="<p>Total Movie " +
+			//"ADDED is "+arr.count;
 			if(checkedResults.length ==0){
 				alert('no movie selected');
 			}
 			else if(type > 10){
 				alert("Cant Add More Movies");
-				window.location.href="/MovieCart/";
+				window.location.href="/MovieCart1/";
 			}
 			else{
 				alert("Movies Add In Cart");
-				window.location.href="/MovieCart/add?ids="+checkedResults.join(',')
+				window.location.href="/MovieCart1/add?ids="+checkedResults.join(',')
 			}
 		}
 	};
 	
 	var params = "type=2";
-	xmlhttp.open('GET',"http://localhost:8084/MovieCart/view?"+params, true);
+	xmlhttp.open('GET',"http://localhost:8084/MovieCart1/view?"+params, true);
 	xmlhttp.send();
 }
 let Detail = function Details(str){
@@ -159,12 +163,9 @@ let Detail = function Details(str){
 			if (this.readyState == 4 && this.status == 200) {
 				let movieObj="";
 				var data = JSON.parse(this.responseText);
-				movieObj+="<p >";
-		        movieObj += '<p> <img src="http://image.tmdb.org/t/p/w500' + data.poster_path + '" width=200 height=300></p>';
-		        movieObj+="Title:" + data.title + "<br>";
-		        movieObj+= "Release date: " + data.release_date + "<br>";
-		        movieObj+="</p>";
-		        movieObj+= "<hr>";
+				movieObj+="<div class='items'>";
+		        movieObj += '<div class="list-item" id="movie-' + data.id+ '"> <img src="http://image.tmdb.org/t/p/w500' + data.poster_path + '" width=200 height=300/><button class="remove-item" onclick="remove('+data.id+')">Remove</button></div>';
+		        movieObj+="</div>";
 		        $mydiv.append(movieObj);
 			}
 		}

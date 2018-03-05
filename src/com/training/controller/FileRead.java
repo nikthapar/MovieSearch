@@ -109,8 +109,7 @@ public class FileRead {
         
     }
 	@SuppressWarnings("unchecked")
-	public void fileremove(String i) throws IOException {
-		int index=Integer.parseInt(i);
+	public void fileremove(String id) throws IOException {
 		System.out.println("hello");
     	String sRootPath = new File("").getAbsolutePath();
     	System.out.println(sRootPath);
@@ -127,16 +126,26 @@ public class FileRead {
 		}
 		JSONObject obj = (JSONObject)obj1;
 		JSONArray arr = (JSONArray) obj.get("Movies");
-		if(index < 0 || index >= arr.size()) {
-			obj.put("flag", "0");
+		int position = -1;
+		int i = 0;
+		Iterator it = arr.iterator();
+		while(it.hasNext()) {
+			if(it.next().equals(id)) {
+				position = i;
+				break;
+			}
+			i++;
 		}
-		else {
-		     arr.remove(index);
+		if(position >= 0) {
+			 arr.remove(position);
 		     obj.put("Movies", arr);
 		     int len = arr.size();
 		     obj.put("count",len );
 		     obj.put("flag", "1");
 		     count = arr.size();
+		}
+		else {
+		     obj.put("flag", "0");
 		}
 		FileWriter f=null;
 		try {
