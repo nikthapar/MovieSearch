@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-     <h1>Can't Add more than 10 movies</h1>
+
 </body>
 </html>

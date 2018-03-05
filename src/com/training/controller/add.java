@@ -4,7 +4,7 @@ package com.training.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.lang.*;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,8 +43,9 @@ public class add extends HttpServlet {
 		   FileRead obj1 = new FileRead(arr);
 		   obj1.fileread();
 		   
-	       RequestDispatcher dispatcher = request.getRequestDispatcher("favroite.jsp");
-	       dispatcher.forward(request,response);
+	      /* RequestDispatcher dispatcher = request.getRequestDispatcher("favroite.jsp");
+	       dispatcher.forward(request,response);*/
+	       response.sendRedirect("index.jsp");
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
