@@ -1,11 +1,12 @@
-
 let $output = $("#output");
 let data = null;
 let $submit = $('#submit');
 let $mydiv = $('#mydiv');
 let $row1 = $('#row1');
+
 function myFunction(){
 	$output.empty();
+	$submit.empty();
 	let APIKEY = "1f39dea1e4239caa8c1ae2c4975e9926";
 	let baseURL="https://api.themoviedb.org/3/";
 	let url="".concat(baseURL,'configuration?api_key=',APIKEY);
@@ -40,6 +41,7 @@ function inner(){
 		let item = movieList[i];
 		$output.append(getMovieItemHTML(item,i));
 	}
+	$submit.append("<button>ADD TO CART</button>")
 };
 
 function getMovieItemHTML(item,i){
@@ -61,25 +63,26 @@ $submit.on('click', function(){
 		}
 	}
 	count(checkedResults);
-	
+	//action1();
 })
 
 
 
 function action1(){
+	$mydiv.empty();
+	$row1.empty();
 	var xmlhttp = new XMLHttpRequest();
 	
 	xmlhttp.onreadystatechange = function(){
 		if(this.readyState == 4 && this.status == 200){
-			alert("hello");
 			var arr = JSON.parse(this.responseText);
 			if(arr.Movies.length==0){
 				alert("No Movie In Cart");
 				window.location.href="/MovieCart1/"
 			}
 			else{
-				$mydiv.empty();
-				$row1.empty();
+				/*$mydiv.empty();
+				$row1.empty();*/
 			    Detail(arr.Movies);
 			    $row1.append("<br><span ><h5 id='count'>Total Movies In Cart "+arr.Movies.length+"</h5></span>");
 			}
@@ -87,7 +90,7 @@ function action1(){
 	};
 	
 	var params = "type=0";
-	xmlhttp.open('GET',"http://localhost:8084/MovieCart1/view?"+params, true);
+	xmlhttp.open('GET',"http://localhost:8085/MovieCart1/view?"+params, true);
 	xmlhttp.send();
 }
 
@@ -113,7 +116,7 @@ function remove(index){
 		};
 		
 		var params = "type=1&"+"index="+index;
-		xmlhttp.open('GET',"http://localhost:8084/MovieCart1/view?"+params, true);
+		xmlhttp.open('GET',"http://localhost:8085/MovieCart1/view?"+params, true);
 		xmlhttp.send();
 }
 
@@ -130,24 +133,24 @@ var xmlhttp = new XMLHttpRequest();
 				type = arr.count+checkedResults.length;
 			}
 			console.log(type);
-			//document.getElementById("count").innerHTML="<p>Total Movie " +
-			//"ADDED is "+arr.count;
 			if(checkedResults.length ==0){
 				alert('no movie selected');
 			}
 			else if(type > 10){
 				alert("Cant Add More Movies");
-				window.location.href="/MovieCart1/";
+				$output.empty();
+				$submit.empty();
+				action1();
 			}
 			else{
 				alert("Movies Add In Cart");
-				window.location.href="/MovieCart1/add?ids="+checkedResults.join(',')
+				add(checkedResults);
 			}
 		}
 	};
 	
 	var params = "type=2";
-	xmlhttp.open('GET',"http://localhost:8084/MovieCart1/view?"+params, true);
+	xmlhttp.open('GET',"http://localhost:8085/MovieCart1/view?"+params, true);
 	xmlhttp.send();
 }
 let Detail = function Details(str){
@@ -170,4 +173,21 @@ let Detail = function Details(str){
 			}
 		}
 	}
+}
+function add(checkedResults){
+	var xmlhttp = new XMLHttpRequest();
+	
+	xmlhttp.onreadystatechange = function(){
+		if(this.readyState == 4 && this.status == 200){
+			var arr = JSON.parse(this.responseText);
+			$output.empty();
+			$submit.empty();
+			action1();
+		}
+	};
+	
+	var params ="?ids="+checkedResults.join(',')
+
+	xmlhttp.open('GET',"http://localhost:8085/MovieCart1/add"+params, true);
+	xmlhttp.send();
 }

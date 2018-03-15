@@ -26,6 +26,7 @@ padding: 10px;
        <h3 class ="text-center">Search for any Movie</h3>
         <input type="text" id ="searchText" placeholder="Enter The Movie Name" class="form-control">
         <button onclick="myFunction()" class="form-control">Search</button>
+        <button onclick="action1()" class="form-control">Watch List</button>
       </div>
     </div>
     <div class="container-fluid"> 
@@ -33,14 +34,13 @@ padding: 10px;
     </div>
     </div>
  
-    <button id="submit">ADD To Cart</button>
+    <div id="submit"></div>
+    
     <div class="container-fluid">
     <div class="row" id="row1"></div>
     <div class="row" id = "mydiv"></div>
     </div>
-    <button id ="but" onclick="action1()">SMovies</button>
-    <div>
-    </div>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
     <script src="main.js">
     </script>          
